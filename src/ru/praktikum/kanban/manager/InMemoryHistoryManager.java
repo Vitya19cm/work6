@@ -3,53 +3,80 @@ package ru.praktikum.kanban.manager;
 import ru.praktikum.kanban.model.Task;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int MAX_HISTORY_SIZE = 10;
-    private LinkedList<Task> history;
-    private Map<Integer, Task> taskMap;
+    private Map<Integer, Node> historyMap;
+    private Node head;
+    private Node tail;
 
-    // Конструктор класса
     public InMemoryHistoryManager() {
-        this.history = new LinkedList<>();
-        this.taskMap = new HashMap<Integer, Task>();
+        this.historyMap = new HashMap<>();
+        this.head = new Node(null);
+        this.tail = new Node(null);
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
     }
 
-    // Метод для добавления задачи в историю просмотров
     @Override
     public void add(Task task) {
-        // Проверка наличия задачи в истории
-        if (taskMap.containsKey(task.getId())) {
-            remove(task.getId()); // Удаление задачи из истории, если она уже там есть
+        int taskId = task.getId();
+        if (historyMap.containsKey(taskId)) {
+            removeNode(historyMap.get(taskId));
         }
 
-        // Добавление задачи в конец истории
-        history.addLast(task);
-        taskMap.put(task.getId(), history.getLast()); // Обновление ссылки на узел в HashMap
+        Node newNode = new Node(task);
+        Node prev = tail.prev;
+        prev.next = newNode;
+        newNode.prev = prev;
+        newNode.next = tail;
+        tail.prev = newNode;
+        historyMap.put(taskId, newNode);
 
-        // Проверка на превышение максимального размера истории
-        if (history.size() > MAX_HISTORY_SIZE) {
-            Task removedTask = history.removeFirst();
-            taskMap.remove(removedTask.getId()); // Удаление ссылки на узел из HashMap
+        if (historyMap.size() > MAX_HISTORY_SIZE) {
+            removeNode(head.next);
         }
     }
 
-    // Метод для удаления задачи из истории просмотров по её id
     @Override
     public void remove(int id) {
-        if (taskMap.containsKey(id)) {
-            Task nodeToRemove = taskMap.get(id);
-            history.remove(nodeToRemove); // Удаление задачи из списка истории
-            taskMap.remove(id); // Удаление ссылки на узел из HashMap
+        if (historyMap.containsKey(id)) {
+            removeNode(historyMap.get(id));
         }
     }
 
-    // Метод для получения всей истории просмотров
     @Override
     public List<Task> getHistory() {
-        return new ArrayList<>(history);
+        List<Task> historyList = new ArrayList<>();
+        Node current = head.next;
+        while (current != tail) {
+            historyList.add(current.task);
+            current = current.next;
+        }
+        return historyList;
+    }
+
+    private void removeNode(Node node) {
+        Node prev = node.prev;
+        Node next = node.next;
+        prev.next = next;
+        next.prev = prev;
+        historyMap.remove(node.task.getId());
+    }
+
+    private static class Node {
+        Task task;
+        Node prev;
+        Node next;
+
+        Node(Task task) {
+            this.task = task;
+            this.prev = null;
+            this.next = null;
+        }
     }
 }
+
