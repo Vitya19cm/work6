@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
+
     private static class Node {
         Task task;
         Node prev;
@@ -22,66 +23,43 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private Node head;
     private Node tail;
-
-    // Удаляемая нода
-    private void removeNode(Node node) {
-        if (node.prev == null) { // Удаление первой ноды
-            head = node.next;
-            if (head != null) {
-                head.prev = null;
-            }
-        } else if (node.next == null) { // Удаление последней ноды
-            tail = node.prev;
-            if (tail != null) {
-                tail.next = null;
-            }
-        } else { // Удаление ноды из центра
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
-        }
-    }
-
-    private static final int MAX_HISTORY_SIZE = 10;
-
-    private int size;
-    private final List<Task> history;
+    private Map<Integer, Node> historyMap;
 
     public InMemoryHistoryManager() {
-        history = new ArrayList<>();
+        this.historyMap = new HashMap<>();
     }
 
     @Override
     public void add(Task task) {
         Node newNode = new Node(task, tail, null);
-        if (tail != null) {
+        if (tail == null) { // Добавление первой ноды
+            head = newNode;
+        } else { // Добавление не первой ноды
             tail.next = newNode;
         }
         tail = newNode;
-        if (head == null) {
-            head = newNode;
-        }
-        if (history.contains(task)) {
-            history.remove(task);
-        }
-        history.add(task);
-        size++;
-        if (size > MAX_HISTORY_SIZE) {
-            removeNode(head);
-            size--;
-        }
+        historyMap.put(task.getId(), newNode);
     }
 
     @Override
     public void remove(int id) {
-        Node current = head;
-        while (current != null) {
-            if (current.task.getId() == id) {
-                removeNode(current);
-                history.remove(current.task);
-                size--;
-                break;
-            }
-            current = current.next;
+        Node nodeToRemove = historyMap.get(id);
+        if (nodeToRemove != null) {
+            removeNode(nodeToRemove);
+            historyMap.remove(id);
+        }
+    }
+
+    private void removeNode(Node node) {
+        if (node.prev == null) { // Удаление первой ноды (head)
+            head = node.next;
+            if (head != null) head.prev = null; // Обнуляем ссылку на предыдущую ноду для новой первой ноды
+        } else if (node.next == null) { // Удаление последней ноды (tail)
+            tail = node.prev;
+            if (tail != null) tail.next = null; // Обнуляем ссылку на следующую ноду для нового хвоста
+        } else { // Удаление ноды из центра
+            node.prev.next = node.next; // Даем ссылку предыдущей ноде на следующую за удаляемой
+            node.next.prev = node.prev; // Даем ссылку следующей ноде на предыдущую за удаляемой
         }
     }
 
@@ -96,5 +74,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         return historyList;
     }
 }
+
 
 
