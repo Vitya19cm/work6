@@ -4,6 +4,12 @@ import ru.praktikum.kanban.model.*;
 import java.util.List;
 
 public interface TaskManager {
+    void add(Task task);
+
+    void remove(int id);
+
+    List<Task> getAll();
+
     Task createTask(Task task);
     void updateTask(Task updatedTask);
     void removeTaskById(int taskId);

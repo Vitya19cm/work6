@@ -19,6 +19,21 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public void add(Task task) {
+
+    }
+
+    @Override
+    public void remove(int id) {
+
+    }
+
+    @Override
+    public List<Task> getAll() {
+        return null;
+    }
+
+    @Override
     public Task createTask(Task task) {
         int taskId = generateTaskId();
 
