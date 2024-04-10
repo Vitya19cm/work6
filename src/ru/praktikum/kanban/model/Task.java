@@ -13,13 +13,6 @@ public class Task {
         this.status = status;
     }
 
-    public Task(int id, TaskType taskType, String description, TaskStatus taskStatus, String s, int i) {
-    }
-
-    public static Task fromString(String line) {
-        return null;
-    }
-
     public int getId() {
         return id;
     }

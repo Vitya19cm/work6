@@ -2,157 +2,104 @@ package ru.praktikum.kanban.manager;
 
 import ru.praktikum.kanban.model.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 
-public class FileBackedTaskManager implements TaskManager {
-    private static final String FILENAME = "tasks.csv";
 
-    // Поле для хранения задач
-    private final List<Task> tasks;
+public class FileBackedTaskManager extends InMemoryTaskManager {
+    private File file; // Файл для сохранения состояния менеджера
 
-    public FileBackedTaskManager() {
-        this.tasks = new ArrayList<>();
+    public FileBackedTaskManager(File file) {
+        this.file = file;
+        // Загрузка данных из файла при создании менеджера
         loadFromFile();
-    }
-
-    // Метод для загрузки задач из файла
-    private void loadFromFile() {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILENAME));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                tasks.add(Task.fromString(line));
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.err.println("Error loading tasks from file: " + e.getMessage());
-        }
-    }
-
-    // Метод для сохранения задач в файл
-    private void saveToFile() {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME));
-            for (Task task : tasks) {
-                writer.write(task.toString());
-                writer.newLine();
-            }
-            writer.close();
-        } catch (IOException e) {
-            System.err.println("Error saving tasks to file: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void add(Task task) {
-        tasks.add(task);
-        saveToFile();
-    }
-
-    @Override
-    public void remove(int id) {
-        Iterator<Task> iterator = tasks.iterator();
-        while (iterator.hasNext()) {
-            Task task = iterator.next();
-            if (task.getId() == id) {
-                iterator.remove();
-                break;
-            }
-        }
-        saveToFile();
-    }
-
-    @Override
-    public List<Task> getAll() {
-        return new ArrayList<>(tasks);
-    }
-
-    public static void main(String[] args) {
-        TaskManager taskManager = new FileBackedTaskManager();
-
-        // Пример использования
-        Task task1 = new Task(1, TaskType.TASK, "Task 1", TaskStatus.NEW, "Description for Task 1", 0);
-        Task task2 = new Task(2, TaskType.EPIC, "Epic 1", TaskStatus.IN_PROGRESS, "Description for Epic 1", 0);
-        Task task3 = new Task(3, TaskType.SUBTASK, "Subtask 1", TaskStatus.DONE, "Description for Subtask 1", 2);
-
-        ((FileBackedTaskManager) taskManager).add(task1);
-        ((FileBackedTaskManager) taskManager).add(task2);
-        ((FileBackedTaskManager) taskManager).add(task3);
-
-        System.out.println("All tasks:");
-        for (Task task : ((FileBackedTaskManager) taskManager).getAll()) {
-            System.out.println(task);
-        }
     }
 
     @Override
     public Task createTask(Task task) {
-        return null;
+        Task createdTask = super.createTask(task); // Вызываем метод создания задачи родительского класса
+        saveToFile(); // Сохраняем изменения в файл
+        return createdTask;
     }
 
     @Override
     public void updateTask(Task updatedTask) {
-
+        super.updateTask(updatedTask); // Вызываем метод обновления задачи родительского класса
+        saveToFile(); // Сохраняем изменения в файл
     }
 
     @Override
     public void removeTaskById(int taskId) {
-
+        super.removeTaskById(taskId); // Вызываем метод удаления задачи родительского класса
+        saveToFile(); // Сохраняем изменения в файл
     }
 
-    @Override
-    public Task getTaskById(int taskId) {
-        return null;
+    // Методы для сохранения и загрузки из файла
+    private void saveToFile() {
+        try (FileWriter writer = new FileWriter(file)) {
+            // Сохраняем задачи
+            for (Task task : getAllTasksByType()) {
+                writer.write(taskToString(task) + "\n");
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Failed to save manager state to file", e);
+        }
     }
 
-    @Override
-    public Epic getEpicById(int epicId) {
-        return null;
+    private void loadFromFile() {
+        if (!file.exists()) {
+            return; // Если файл не существует, выходим из метода
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Task task = taskFromString(line);
+                if (task != null) {
+                    createTask(task);
+                }
+            }
+        } catch (IOException e) {
+            throw new ManagerLoadException("Failed to load manager state from file", e);
+        }
     }
 
-    @Override
-    public Subtask getSubtaskById(int subtaskId) {
-        return null;
+    // Методы для работы с форматом CSV
+    private String taskToString(Task task) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(task.getId()).append(",");
+        sb.append(task.getType()).append(",");
+        sb.append(task.getTitle()).append(",");
+        sb.append(task.getStatus()).append(",");
+        sb.append(task.getDescription()).append(",");
+        if (task instanceof Subtask) {
+            sb.append(((Subtask) task).getEpicId());
+        } else if (task instanceof Epic) {
+            sb.append("");
+        }
+        return sb.toString();
     }
 
-    @Override
-    public List<Task> getAllTasksByType() {
-        return null;
-    }
-
-    @Override
-    public List<Subtask> getAllSubtasks() {
-        return null;
-    }
-
-    @Override
-    public List<Epic> getAllEpics() {
-        return null;
-    }
-
-    @Override
-    public List<Subtask> getSubtasksOfEpic(int epicId) {
-        return null;
-    }
-
-    @Override
-    public void clearAllTasks() {
-
-    }
-
-    @Override
-    public void clearAllSubtasks() {
-
-    }
-
-    @Override
-    public void clearAllEpics() {
-
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return null;
+    private Task taskFromString(String value) {
+        String[] parts = value.split(",");
+        int id = Integer.parseInt(parts[0]);
+        TaskType type = TaskType.valueOf(parts[1]);
+        String title = parts[2];
+        TaskStatus status = TaskStatus.valueOf(parts[3]);
+        String description = parts[4];
+        switch (type) {
+            case TASK:
+                return new Task(id, title, description, status);
+            case SUBTASK:
+                int epicId = Integer.parseInt(parts[5]);
+                return new Subtask(id, title, description, status, epicId);
+            case EPIC:
+                return new Epic(id, title, description, status);
+            default:
+                return null;
+        }
     }
 }
+
