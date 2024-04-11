@@ -1,21 +1,19 @@
-import ru.praktikum.kanban.manager.HistoryManager;
 import ru.praktikum.kanban.manager.Managers;
 import ru.praktikum.kanban.manager.TaskManager;
 import ru.praktikum.kanban.model.*;
 
 import java.util.List;
 
-
 public class Main {
     public static void main(String[] args) {
         // Создание менеджера задач
-        TaskManager taskManager = new ru.praktikum.kanban.manager.InMemoryTaskManager();
+        TaskManager taskManager = Managers.getDefaultTaskManager();
 
         // Создание задач
         Task task1 = new Task(1, "Task 1", "Description 1", TaskStatus.NEW);
         Task task2 = new Task(2, "Task 2", "Description 2", TaskStatus.NEW);
         Subtask subtask = new Subtask(3, "Subtask 1", "Subtask Description 1", TaskStatus.NEW, 0);
-        Epic epic = new Epic(4, "Epic 1", "Epic Description 1", TaskStatus.NEW);
+        Epic epic = new Epic(4, "Epic 1", "Epic Description 1", TaskStatus.NEW, null); // Передаем null вместо списка подзадач
 
         // Добавление задач в менеджер
         taskManager.createTask(task1);
@@ -44,16 +42,13 @@ public class Main {
             System.out.println(st);
         }
 
-        // Вывод всех эпиков
+        // Вывод всех эпиков и их подзадач
         for (Epic e : allEpics) {
             System.out.println(e);
+            List<Subtask> epicSubtasks = taskManager.getSubtasksOfEpic(e.getId());
+            for (Subtask st : epicSubtasks) {
+                System.out.println("    " + st);
+            }
         }
     }
 }
-
-
-
-
-
-
-

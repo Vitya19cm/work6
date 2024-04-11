@@ -3,15 +3,13 @@ package ru.praktikum.kanban.manager;
 import org.junit.Test;
 import ru.praktikum.kanban.model.*;
 
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class TaskManagerTest {
 
     @Test
     public void testEpicCannotBeAddedAsSubtaskToItself() {
-        Epic epic = new Epic(1, "Epic 1", "Epic Description 1", TaskStatus.NEW);
+        Epic epic = new Epic(1, "Epic 1", "Epic Description 1", TaskStatus.NEW, subtasks);
 
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
         assertFalse("Epic cannot be added as subtask to itself",
@@ -46,7 +44,7 @@ public class TaskManagerTest {
         Subtask subtask = new Subtask(2, "Subtask 1", "Subtask Description 1", TaskStatus.NEW, 0);
         taskManager.createTask(subtask);
 
-        Epic epic = new Epic(3, "Epic 1", "Epic Description 1", TaskStatus.NEW);
+        Epic epic = new Epic(3, "Epic 1", "Epic Description 1", TaskStatus.NEW, subtasks);
         taskManager.createTask(epic);
 
         assertEquals("Task should be found by id", task, taskManager.getTaskById(1));
