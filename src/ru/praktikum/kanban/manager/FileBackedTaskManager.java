@@ -7,15 +7,15 @@ import ru.praktikum.kanban.model.*;
 import java.io.*;
 import java.util.*;
 
-public class FileBackedTaskManager implements TaskManager {
-    private File file;
-    private Map<Integer, Task> tasks;
-    private Map<Integer, Subtask> subtasks;
-    private Map<Integer, Epic> epics;
-    private HistoryManager historyManager;
+public class FileBackedTaskManager extends InMemoryTaskManager {
+    private final File file;
+    private final Map<Integer, Task> tasks;
+    private final Map<Integer, Subtask> subtasks;
+    private final Map<Integer, Epic> epics;
+    private final HistoryManager historyManager;
     private int taskIdCounter;
 
-    public FileBackedTaskManager(File file) {
+    private FileBackedTaskManager(File file) {
         this.file = file;
         this.tasks = new HashMap<>();
         this.subtasks = new HashMap<>();
@@ -23,6 +23,10 @@ public class FileBackedTaskManager implements TaskManager {
         this.historyManager = new InMemoryHistoryManager();
         this.taskIdCounter = 1;
         loadFromFile();
+    }
+
+    public static FileBackedTaskManager loadFromFile(File file) {
+        return new FileBackedTaskManager(file);
     }
 
     @Override
@@ -174,7 +178,7 @@ public class FileBackedTaskManager implements TaskManager {
             for (Task task : getAllTasksByType()) {
                 writer.write(TaskConverter.taskToString(task) + "\n");
             }
-            writer.write(TaskConverter.historyToString(getHistory()));
+            writer.write(TaskConverter.historyToString(getHistory())); // Запись истории в файл
         } catch (IOException e) {
             throw new ManagerSaveException("Failed to save manager state to file", e);
         }
@@ -197,9 +201,23 @@ public class FileBackedTaskManager implements TaskManager {
             for (int taskId : history) {
                 historyManager.add(getTaskById(taskId));
             }
+            updateTaskIdCounter(); // Обновление счетчика идентификаторов
         } catch (IOException e) {
             throw new ManagerLoadException("Failed to load manager state from file", e);
         }
+    }
+
+    private void updateTaskIdCounter() {
+        int maxId = tasks.keySet().stream()
+                .max(Comparator.naturalOrder())
+                .orElse(0);
+        maxId = Math.max(maxId, subtasks.keySet().stream()
+                .max(Comparator.naturalOrder())
+                .orElse(0));
+        maxId = Math.max(maxId, epics.keySet().stream()
+                .max(Comparator.naturalOrder())
+                .orElse(0));
+        taskIdCounter = maxId + 1;
     }
 
     private int generateTaskId() {
@@ -225,3 +243,4 @@ public class FileBackedTaskManager implements TaskManager {
         }
     }
 }
+
