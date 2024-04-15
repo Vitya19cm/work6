@@ -1,7 +1,5 @@
 package ru.praktikum.kanban.manager;
 
-import ru.praktikum.kanban.manager.TaskManager;
-import ru.praktikum.kanban.manager.HistoryManager;
 import ru.praktikum.kanban.model.*;
 
 import java.io.*;
@@ -25,157 +23,84 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         loadFromFile();
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) { // Добавил статический метод loadFromFile
         return new FileBackedTaskManager(file);
     }
 
     @Override
     public Task createTask(Task task) {
-        int taskId = generateTaskId();
-
-        switch (task.getType()) {
-            case TASK:
-                tasks.put(taskId, task);
-                break;
-            case SUBTASK:
-                Subtask subtask = (Subtask) task;
-                int epicId = subtask.getEpicId();
-                Epic epic = epics.get(epicId);
-
-                if (epic != null) {
-                    epic.addSubtask(taskId);
-                    subtasks.put(taskId, subtask);
-                    updateEpicStatus(epicId);
-                }
-                break;
-            case EPIC:
-                epics.put(taskId, (Epic) task);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid task type");
-        }
-
+        Task createdTask = super.createTask(task); // Вызываем метод из родительского класса
         saveToFile(); // Сохраняем изменения в файл
-        return task;
+        return createdTask; // Возвращаем созданную задачу
     }
 
     @Override
     public void updateTask(Task updatedTask) {
-        tasks.put(updatedTask.getId(), updatedTask);
+        super.updateTask(updatedTask); // Вызываем метод из родительского класса
         saveToFile(); // Сохраняем изменения в файл
     }
 
     @Override
     public void removeTaskById(int taskId) {
-        Task removedTask = tasks.remove(taskId);
-
-        if (removedTask != null) {
-            TaskType taskType = removedTask.getType();
-
-            switch (taskType) {
-                case SUBTASK:
-                    subtasks.remove(taskId);
-                    break;
-                case EPIC:
-                    epics.remove(taskId);
-                    break;
-            }
-        }
+        super.removeTaskById(taskId); // Вызываем метод из родительского класса
         saveToFile(); // Сохраняем изменения в файл
     }
 
     @Override
     public Task getTaskById(int taskId) {
-        Task task = tasks.get(taskId);
+        Task task = super.getTaskById(taskId); // Вызываем метод из родительского класса
         if (task != null) {
-            historyManager.add(task); // Добавление задачи в историю
+            historyManager.add(task); // Добавляем задачу в историю
         }
-        return task;
+        return task; // Возвращаем задачу
     }
 
     @Override
-    public Epic getEpicById(int epicId) {
-        Epic epic = epics.get(epicId);
-        if (epic != null) {
-            historyManager.add(epic); // Добавление эпика в историю
-        }
-        return epic;
-    }
-
-    @Override
-    public Subtask getSubtaskById(int subtaskId) {
-        Subtask subtask = subtasks.get(subtaskId);
-        if (subtask != null) {
-            historyManager.add(subtask); // Добавление подзадачи в историю
-        }
-        return subtask;
-    }
-
-    @Override
-    public List<Task> getAllTasksByType() {
-        return new ArrayList<>(tasks.values());
+    public List<Task> getAllTasks() {
+        return super.getAllTasksByType(); // Исправлен вызов родительского метода
     }
 
     @Override
     public List<Subtask> getAllSubtasks() {
-        return new ArrayList<>(subtasks.values());
+        return super.getAllSubtasks(); // Вызываем метод из родительского класса
     }
 
     @Override
     public List<Epic> getAllEpics() {
-        return new ArrayList<>(epics.values());
+        return super.getAllEpics(); // Вызываем метод из родительского класса
     }
 
     @Override
     public List<Subtask> getSubtasksOfEpic(int epicId) {
-        Epic epic = epics.get(epicId);
-
-        if (epic == null) {
-            return new ArrayList<>();
-        }
-
-        List<Subtask> epicSubtasks = new ArrayList<>();
-        List<Integer> subtaskIds = epic.getSubtasks();
-
-        for (int subtaskId : subtaskIds) {
-            Subtask subtask = subtasks.get(subtaskId);
-            if (subtask != null) {
-                epicSubtasks.add(subtask);
-            }
-        }
-
-        return epicSubtasks;
+        return super.getSubtasksOfEpic(epicId); // Вызываем метод из родительского класса
     }
 
     @Override
     public void clearAllTasks() {
-        tasks.clear();
-        subtasks.clear();
-        epics.clear();
+        super.clearAllTasks(); // Вызываем метод из родительского класса
         saveToFile(); // Сохраняем изменения в файл
     }
 
     @Override
     public void clearAllSubtasks() {
-        subtasks.clear();
-        epics.values().forEach(epic -> epic.getSubtasks().clear());
+        super.clearAllSubtasks(); // Вызываем метод из родительского класса
         saveToFile(); // Сохраняем изменения в файл
     }
 
     @Override
     public void clearAllEpics() {
-        epics.clear();
+        super.clearAllEpics(); // Вызываем метод из родительского класса
         saveToFile(); // Сохраняем изменения в файл
     }
 
     @Override
     public List<Task> getHistory() {
-        return historyManager.getHistory();
+        return historyManager.getHistory(); // Возвращаем историю из объекта historyManager
     }
 
     private void saveToFile() {
         try (FileWriter writer = new FileWriter(file)) {
-            for (Task task : getAllTasksByType()) {
+            for (Task task : tasks.values()) {
                 writer.write(TaskConverter.taskToString(task) + "\n");
             }
             writer.write(TaskConverter.historyToString(getHistory())); // Запись истории в файл
@@ -243,4 +168,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 }
+
+
 

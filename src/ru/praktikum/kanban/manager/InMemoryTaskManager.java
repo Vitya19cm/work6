@@ -3,7 +3,7 @@ package ru.praktikum.kanban.manager;
 import ru.praktikum.kanban.model.*;
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManager {
+public abstract class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> tasks;
     private Map<Integer, Subtask> subtasks;
     private Map<Integer, Epic> epics;
@@ -101,6 +101,8 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getAllTasksByType() {
         return new ArrayList<>(tasks.values());
     }
+
+    public abstract List<Task> getAllTasks();
 
     @Override
     public List<Subtask> getAllSubtasks() {
