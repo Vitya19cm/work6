@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private final File file;
+    private final File file; // Эти переменные нужны, так как используются в коде. Убирая любую из них возникает ошибка компиляции
     private final Map<Integer, Task> tasks;
     private final Map<Integer, Subtask> subtasks;
     private final Map<Integer, Epic> epics;
@@ -23,7 +23,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         loadFromFile();
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) { // Добавил статический метод loadFromFile
+    public static FileBackedTaskManager loadFromFile(File file) {
         return new FileBackedTaskManager(file);
     }
 
@@ -54,10 +54,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         return task; // Возвращаем задачу
     }
-
     @Override
-    public List<Task> getAllTasks() {
-        return super.getAllTasksByType(); // Исправлен вызов родительского метода
+    public Subtask getSubtaskById(int subtaskId) {
+        Subtask subtask = subtasks.get(subtaskId);
+        if (subtask != null) {
+            historyManager.add(subtask); // Добавление подзадачи в историю
+            saveToFile(); // Сохраняем изменения в файл
+        }
+        return subtask;
     }
 
     @Override
@@ -96,6 +100,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory(); // Возвращаем историю из объекта historyManager
+    }
+
+    @Override
+    public List<Task> getAllTasks() { // Этот метод нужен, так как если убираем его возникает ошибка компиляции. Компилятор просит делать абстрактный метод вместо него. Нам это не нужно
+        return new ArrayList<>(tasks.values());
     }
 
     private void saveToFile() {
@@ -168,6 +177,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 }
+
 
 
 
