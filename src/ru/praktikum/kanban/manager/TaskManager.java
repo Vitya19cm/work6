@@ -5,19 +5,16 @@ import java.util.List;
 
 public interface TaskManager {
     Task createTask(Task task);
+
     void updateTask(Task updatedTask);
+
     void removeTaskById(int taskId);
+
     Task getTaskById(int taskId);
-    Epic getEpicById(int epicId); // Новый метод для получения эпика по ID
-    Subtask getSubtaskById(int subtaskId); // Новый метод для получения подзадачи по ID
-    List<Task> getAllTasksByType();
-    List<Subtask> getAllSubtasks();
-    List<Epic> getAllEpics();
-    List<Subtask> getSubtasksOfEpic(int epicId);
+
+    List<Task> getAllTasks();
+
     void clearAllTasks();
-    void clearAllSubtasks();
-    void clearAllEpics();
-    List<Task> getHistory();
 }
 
 

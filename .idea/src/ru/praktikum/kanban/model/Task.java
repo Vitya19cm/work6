@@ -46,9 +46,6 @@ public class Task {
                 ", status=" + status +
                 '}';
     }
-
-    public void setId(int taskId) {
-    }
 }
 
 
