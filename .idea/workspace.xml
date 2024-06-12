@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d216c550-3b41-48d8-a92a-bbe4d389d173" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/FileBackedTaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/FileBackedTaskManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/InMemoryTaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/InMemoryTaskManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/Managers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/Managers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/TaskConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/TaskConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/TaskManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/model/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/model/Task.java" afterDir="false" />
-    </list>
+    <list default="true" id="d216c550-3b41-48d8-a92a-bbe4d389d173" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,7 +36,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "sprint__6-in-file-manager",
-    "last_opened_file_path": "C:/Users/Barguzin 7/dev/sprint_7-solution-in-file-manager"
+    "last_opened_file_path": "C:/Users/Barguzin 7/dev/work6-496a64817550227069643ea609c2d14f84ad9679"
   }
 }]]></component>
   <component name="RecentsManager">

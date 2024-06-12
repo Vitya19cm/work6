@@ -13,7 +13,9 @@ public class TaskConverter {
             return "SUBTASK," + task.getId() + "," + task.getTitle() + "," + task.getDescription() + "," + task.getStatus() + "," + ((Subtask) task).getEpicId();
         } else if (task instanceof Epic) {
             Epic epic = (Epic) task;
-            return "EPIC," + task.getId() + "," + task.getTitle() + "," + task.getDescription() + "," + task.getStatus() + "," + epic.getSubtasks().stream().map(Object::toString).collect(Collectors.joining(","));
+            List<Integer> subtaskIds = epic.getSubtaskIds();
+            String subtasks = subtaskIds.stream().map(Object::toString).collect(Collectors.joining(","));
+            return "EPIC," + task.getId() + "," + task.getTitle() + "," + task.getDescription() + "," + task.getStatus() + "," + subtasks;
         } else {
             return "TASK," + task.getId() + "," + task.getTitle() + "," + task.getDescription() + "," + task.getStatus();
         }
@@ -35,7 +37,7 @@ public class TaskConverter {
                 int epicId = Integer.parseInt(parts[5]);
                 return new Subtask(id, title, description, status, epicId);
             case EPIC:
-                List<Integer> subtasks = Stream.of(parts[5].split(","))
+                List<Integer> subtasks = Arrays.stream(parts[5].split(","))
                         .map(Integer::parseInt)
                         .collect(Collectors.toList());
                 return new Epic(id, title, description, status, subtasks);

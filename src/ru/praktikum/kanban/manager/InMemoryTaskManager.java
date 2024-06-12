@@ -5,34 +5,117 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     protected Map<Integer, Task> tasks;
+    protected Map<Integer, Subtask> subtasks;
+    protected Map<Integer, Epic> epics;
+    protected HistoryManager historyManager;
+    private int taskIdCounter;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
+        this.subtasks = new HashMap<>();
+        this.epics = new HashMap<>();
+        this.historyManager = new InMemoryHistoryManager();
+        this.taskIdCounter = 1;
     }
 
     @Override
     public Task createTask(Task task) {
-        if (task.getId() == 0) {
-            int taskId = generateTaskId();
-            task.setId(taskId);
+        int taskId = generateTaskId();
+        task.setId(taskId);
+
+        switch (task.getType()) {
+            case TASK:
+                tasks.put(taskId, task);
+                break;
+            case SUBTASK:
+                Subtask subtask = (Subtask) task;
+                int epicId = subtask.getEpicId();
+                Epic epic = epics.get(epicId);
+
+                if (epic != null) {
+                    epic.addSubtask(taskId);
+                    subtasks.put(taskId, subtask);
+                    updateEpicStatus(epicId);
+                }
+                break;
+            case EPIC:
+                epics.put(taskId, (Epic) task);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid task type");
         }
-        tasks.put(task.getId(), task);
+
         return task;
     }
 
+
     @Override
     public void updateTask(Task updatedTask) {
-        tasks.put(updatedTask.getId(), updatedTask);
+        switch (updatedTask.getType()) {
+            case TASK:
+                tasks.put(updatedTask.getId(), updatedTask);
+                break;
+            case SUBTASK:
+                Subtask subtask = (Subtask) updatedTask;
+                subtasks.put(updatedTask.getId(), subtask);
+                updateEpicStatus(subtask.getEpicId());
+                break;
+            case EPIC:
+                epics.put(updatedTask.getId(), (Epic) updatedTask);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid task type");
+        }
     }
 
     @Override
     public void removeTaskById(int taskId) {
-        tasks.remove(taskId);
+        Task removedTask = tasks.remove(taskId);
+
+        if (removedTask != null) {
+            TaskType taskType = removedTask.getType();
+
+            switch (taskType) {
+                case SUBTASK:
+                    subtasks.remove(taskId);
+                    break;
+                case EPIC:
+                    Epic epic = (Epic) removedTask;
+                    List<Integer> subtaskIds = epic.getSubtaskIds();
+                    subtaskIds.forEach(subtaskId -> subtasks.remove(subtaskId));
+                    epics.remove(taskId);
+                    break;
+            }
+        }
     }
+
+
 
     @Override
     public Task getTaskById(int taskId) {
-        return tasks.get(taskId);
+        Task task = tasks.get(taskId);
+        if (task != null) {
+            historyManager.add(task);
+        }
+        return task;
+    }
+
+
+    public Epic getEpicById(int epicId) {
+        Epic epic = epics.get(epicId);
+        if (epic != null) {
+            historyManager.add(epic);
+        }
+        return epic;
+    }
+
+
+    public Subtask getSubtaskById(int subtaskId) {
+        Subtask subtask = subtasks.get(subtaskId);
+        if (subtask != null) {
+            historyManager.add(subtask);
+        }
+        return subtask;
     }
 
     @Override
@@ -40,18 +123,89 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(tasks.values());
     }
 
+    public List<Subtask> getAllSubtasks() {
+        return new ArrayList<>(subtasks.values());
+    }
+
+    public List<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
+    }
+
+
+    public List<Subtask> getSubtasksOfEpic(int epicId) {
+        Epic epic = epics.get(epicId);
+
+        if (epic == null) {
+            return new ArrayList<>();
+        }
+
+        List<Subtask> epicSubtasks = new ArrayList<>();
+        List<Integer> subtaskIds = epic.getSubtaskIds();
+
+        for (int subtaskId : subtaskIds) {
+            Subtask subtask = subtasks.get(subtaskId);
+            if (subtask != null) {
+                epicSubtasks.add(subtask);
+            }
+        }
+
+        return epicSubtasks;
+    }
+
+
     @Override
     public void clearAllTasks() {
         tasks.clear();
+        subtasks.clear();
+        epics.clear();
+    }
+
+
+    public void clearAllSubtasks() {
+        subtasks.clear();
+        for (Epic epic : epics.values()) {
+            List<Integer> subtaskIds = epic.getSubtaskIds();
+            subtaskIds.forEach(subtaskId -> subtasks.remove(subtaskId));
+            epic.getSubtaskIds().clear();
+        }
+    }
+
+
+
+    public void clearAllEpics() {
+        epics.clear();
+        subtasks.clear();
+    }
+
+
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     private int generateTaskId() {
-        int maxId = tasks.keySet().stream()
-                .max(Comparator.naturalOrder())
-                .orElse(0);
-        return maxId + 1;
+        return taskIdCounter++;
     }
+
+    private void updateEpicStatus(int epicId) {
+        Epic epic = epics.get(epicId);
+        boolean allSubtasksDone = true;
+
+        for (int subtaskId : epic.getSubtaskIds()) {
+            Subtask subtask = subtasks.get(subtaskId);
+            if (subtask != null && subtask.getStatus() != TaskStatus.DONE) {
+                allSubtasksDone = false;
+                break;
+            }
+        }
+
+        if (allSubtasksDone) {
+            epic.setStatus(TaskStatus.DONE);
+        }
+    }
+
 }
+
+
 
 
 

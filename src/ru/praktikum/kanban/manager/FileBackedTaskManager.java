@@ -7,16 +7,36 @@ import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     protected final File file;
-    protected static Map<Integer, Task> tasks = null;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
-        this.tasks = new HashMap<>();
-        loadFromFile(); // Метод loadFromFile теперь доступен извне
+        loadFromFile();
     }
 
     private void loadFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Task task = TaskConverter.taskFromString(line);
+                if (task instanceof Epic) {
+                    Epic epic = (Epic) task;
+                    epics.put(epic.getId(), epic);
+                } else if (task instanceof Subtask) {
+                    Subtask subtask = (Subtask) task;
+                    subtasks.put(subtask.getId(), subtask);
+                    Epic epic = epics.get(subtask.getEpicId());
+                    if (epic != null) {
+                        epic.addSubtask(subtask.getId());
+                    }
+                } else {
+                    tasks.put(task.getId(), task);
+                }
+            }
+        } catch (IOException e) {
+            throw new ManagerLoadException("Failed to load manager state from file", e);
+        }
     }
+
 
     @Override
     public Task createTask(Task task) {
@@ -37,9 +57,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         saveToFile();
     }
 
-    @Override
-    public void clearAllTasks() {
-        super.clearAllTasks();
+    public void clearTasks() {
+        tasks.clear();
+        saveToFile();
+    }
+
+    public void clearSubtasks() {
+        for (Subtask subtask : subtasks.values()) {
+            Epic epic = epics.get(subtask.getEpicId());
+            if (epic != null) {
+                epic.removeSubtask(subtask.getId());
+            }
+        }
+        subtasks.clear();
+        saveToFile();
+    }
+
+
+    public void clearEpics() {
+        epics.clear();
+        subtasks.clear();
         saveToFile();
     }
 
@@ -48,32 +85,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (Task task : tasks.values()) {
                 writer.write(TaskConverter.taskToString(task) + "\n");
             }
+            for (Epic epic : epics.values()) {
+                writer.write(TaskConverter.taskToString(epic) + "\n");
+                for (Integer subtaskId : epic.getSubtaskIds()) {
+                    Subtask subtask = subtasks.get(subtaskId);
+                    if (subtask != null) {
+                        writer.write(TaskConverter.taskToString(subtask) + "\n");
+                    }
+                }
+            }
         } catch (IOException e) {
             throw new ManagerSaveException("Failed to save manager state to file", e);
         }
     }
 
-    protected static TaskManager loadFromFile(File file) {
 
-        if (!file.exists()) {
-            return null;
-        }
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Task task = TaskConverter.taskFromString(line);
-                if (task != null) {
-                    tasks.put(task.getId(), task);
-                }
-            }
-        } catch (IOException e) {
-            throw new ManagerLoadException("Failed to load manager state from file", e);
-        }
-        return null;
+    public static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager fileManager = new FileBackedTaskManager(file);
+        fileManager.loadFromFile();
+        return fileManager;
     }
-
-
 }
+
+
 
 
 
