@@ -23,7 +23,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private Node head;
     private Node tail;
-    private Map<Integer, Node> historyMap;
+    private final Map<Integer, Node> historyMap;
 
     public InMemoryHistoryManager() {
         this.historyMap = new HashMap<>();
@@ -77,6 +77,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return historyList;
     }
 }
+
 
 
 

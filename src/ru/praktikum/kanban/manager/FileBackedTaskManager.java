@@ -13,20 +13,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         loadFromFile();
     }
 
-    private void loadFromFile() {
+    public void loadFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 Task task = TaskConverter.taskFromString(line);
                 if (task instanceof Epic) {
-                    Epic epic = (Epic) task;
-                    epics.put(epic.getId(), epic);
+                    epics.put(task.getId(), (Epic) task);
                 } else if (task instanceof Subtask) {
-                    Subtask subtask = (Subtask) task;
-                    subtasks.put(subtask.getId(), subtask);
-                    Epic epic = epics.get(subtask.getEpicId());
+                    subtasks.put(task.getId(), (Subtask) task);
+                    Epic epic = epics.get(((Subtask) task).getEpicId());
                     if (epic != null) {
-                        epic.addSubtask(subtask.getId());
+                        epic.addSubtask(task.getId());
                     }
                 } else {
                     tasks.put(task.getId(), task);
@@ -36,7 +34,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerLoadException("Failed to load manager state from file", e);
         }
     }
-
 
     @Override
     public Task createTask(Task task) {
@@ -57,26 +54,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         saveToFile();
     }
 
+    @Override
     public void clearTasks() {
-        tasks.clear();
+        super.clearTasks();
         saveToFile();
     }
 
+    @Override
     public void clearSubtasks() {
-        for (Subtask subtask : subtasks.values()) {
-            Epic epic = epics.get(subtask.getEpicId());
-            if (epic != null) {
-                epic.removeSubtask(subtask.getId());
-            }
-        }
-        subtasks.clear();
+        super.clearSubtasks();
         saveToFile();
     }
 
-
+    @Override
     public void clearEpics() {
-        epics.clear();
-        subtasks.clear();
+        super.clearEpics();
         saveToFile();
     }
 
@@ -87,7 +79,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             for (Epic epic : epics.values()) {
                 writer.write(TaskConverter.taskToString(epic) + "\n");
-                for (Integer subtaskId : epic.getSubtaskIds()) {
+                for (int subtaskId : epic.getSubtaskIds()) {
                     Subtask subtask = subtasks.get(subtaskId);
                     if (subtask != null) {
                         writer.write(TaskConverter.taskToString(subtask) + "\n");
@@ -99,13 +91,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileManager = new FileBackedTaskManager(file);
         fileManager.loadFromFile();
         return fileManager;
     }
 }
+
+
 
 
 
