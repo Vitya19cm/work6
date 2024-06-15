@@ -14,7 +14,6 @@ public interface TaskManager {
 
     List<Task> getAllTasks();
 
-    void clearAllTasks();
 }
 
 

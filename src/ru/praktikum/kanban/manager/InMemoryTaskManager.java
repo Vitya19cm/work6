@@ -49,7 +49,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task updatedTask) {
-        tasks.put(updatedTask.getId(), updatedTask);
+        switch (updatedTask.getType()) {
+            case TASK:
+                tasks.put(updatedTask.getId(), updatedTask);
+                break;
+            case SUBTASK:
+                subtasks.put(updatedTask.getId(), (Subtask) updatedTask);
+                updateEpicStatus(((Subtask) updatedTask).getEpicId());
+                break;
+            case EPIC:
+                epics.put(updatedTask.getId(), (Epic) updatedTask);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid task type");
+        }
     }
 
     @Override
@@ -140,11 +153,6 @@ public class InMemoryTaskManager implements TaskManager {
         return epicSubtasks;
     }
 
-    @Override
-    public void clearAllTasks() {
-        tasks.clear();
-
-    }
 
     public void clearTasks() {
         tasks.clear();
