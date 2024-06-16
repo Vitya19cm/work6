@@ -51,55 +51,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void removeTaskById(int taskId) {
         super.removeTaskById(taskId);
-        historyManager.remove(taskId);
         saveToFile();
-    }
-
-    @Override
-    public Task getTaskById(int taskId) {
-        Task task = super.getTaskById(taskId);
-        historyManager.add(task);
-        return task;
-    }
-
-    @Override
-    public Subtask getSubtaskById(int subtaskId) {
-        Subtask subtask = super.getSubtaskById(subtaskId);
-        historyManager.add(subtask);
-        return subtask;
-    }
-
-    @Override
-    public Epic getEpicById(int epicId) {
-        Epic epic = super.getEpicById(epicId);
-        historyManager.add(epic);
-        return epic;
     }
 
     @Override
     public void clearTasks() {
         super.clearTasks();
-        for (Task task : tasks.values()) {
-            historyManager.remove(task.getId());
-        }
         saveToFile();
     }
 
     @Override
     public void clearSubtasks() {
         super.clearSubtasks();
-        for (Subtask subtask : subtasks.values()) {
-            historyManager.remove(subtask.getId());
-        }
         saveToFile();
     }
 
     @Override
     public void clearEpics() {
         super.clearEpics();
-        for (Epic epic : epics.values()) {
-            historyManager.remove(epic.getId());
-        }
         saveToFile();
     }
 

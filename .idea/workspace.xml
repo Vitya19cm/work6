@@ -8,7 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/FileBackedTaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/FileBackedTaskManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/InMemoryTaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/InMemoryTaskManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/TaskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ru/praktikum/kanban/manager/FileBackedTaskManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/ru/praktikum/kanban/manager/FileBackedTaskManagerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,14 +36,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "sprint__6-in-file-manager",
-    "last_opened_file_path": "C:/Users/Barguzin 7/dev/HW6"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;sprint__6-in-file-manager&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Barguzin 7/dev/HW6&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="ru.praktikum.kanban.manager" />

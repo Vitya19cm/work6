@@ -32,28 +32,31 @@ public class FileBackedTaskManagerTest {
         Subtask subtask1 = new Subtask(4, "Subtask 1", "Description 4", TaskStatus.NEW, epic1.getId());
         manager.createTask(subtask1);
 
+        // Проверяем историю до сохранения в файл
+        manager.getTaskById(task1.getId());
+        manager.getEpicById(epic1.getId());
+        manager.getSubtaskById(subtask1.getId());
+
         // Создаем новый файловый менеджер из того же файла и проверяем корректность восстановления состояния
         FileBackedTaskManager newManager = FileBackedTaskManager.loadFromFile(file);
 
         // Проверяем задачи
-        List<Task> tasks = newManager.getAllTasks();
-        assertEquals(2, tasks.size());
-        assertTrue(tasks.contains(task1));
-        assertTrue(tasks.contains(task2));
+        assertEquals(manager.getAllTasks(), newManager.getAllTasks());
 
         // Проверяем эпики
-        List<Epic> epics = newManager.getAllEpics();
-        assertEquals(1, epics.size());
-        assertTrue(epics.contains(epic1));
+        assertEquals(manager.getAllEpics(), newManager.getAllEpics());
 
         // Проверяем подзадачи
-        List<Subtask> subtasks = newManager.getAllSubtasks();
-        assertEquals(1, subtasks.size());
-        assertTrue(subtasks.contains(subtask1));
+        assertEquals(manager.getAllSubtasks(), newManager.getAllSubtasks());
+
+        // Проверяем историю
+        assertEquals(manager.getHistory(), newManager.getHistory());
 
         // Удаляем временный файл после тестирования
         file.delete();
     }
 }
+
+
 
 
