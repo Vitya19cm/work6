@@ -2,18 +2,15 @@ package ru.praktikum.kanban.manager;
 
 import ru.praktikum.kanban.model.*;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TaskConverter {
     public static String taskToString(Task task) {
         if (task instanceof Subtask) {
-            Subtask subtask = (Subtask) task;
-            return "SUBTASK," + task.getId() + "," + task.getTitle() + "," + task.getDescription() + "," + task.getStatus() + ","
-                    + subtask.getEpicId() + "," + subtask.getDuration() + "," + subtask.getStartTime();
+            return "SUBTASK," + task.getId() + "," + task.getTitle() + "," + task.getDescription() + "," + task.getStatus() + "," + ((Subtask) task).getEpicId();
         } else if (task instanceof Epic) {
             Epic epic = (Epic) task;
             List<Integer> subtaskIds = epic.getSubtaskIds();
@@ -38,14 +35,12 @@ public class TaskConverter {
                 return new Task(id, title, description, status);
             case SUBTASK:
                 int epicId = Integer.parseInt(parts[5]);
-                Duration duration = Duration.parse(parts[6]);
-                LocalDateTime startTime = LocalDateTime.parse(parts[7]);
-                return new Subtask(id, title, description, status, duration, startTime, epicId);
+                return new Subtask(id, title, description, status, epicId);
             case EPIC:
-                List<Integer> subtaskIds = Arrays.stream(parts[5].split(","))
+                List<Integer> subtasks = Arrays.stream(parts[5].split(","))
                         .map(Integer::parseInt)
                         .collect(Collectors.toList());
-                return new Epic(id, title, description, status, subtaskIds);
+                return new Epic(id, title, description, status, subtasks);
             default:
                 return null;
         }
@@ -64,7 +59,5 @@ public class TaskConverter {
                 .collect(Collectors.toList());
     }
 }
-
-
 
 

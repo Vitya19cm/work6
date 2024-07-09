@@ -5,10 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d216c550-3b41-48d8-a92a-bbe4d389d173" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/HW6.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HW6.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/HistoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/HistoryManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/InMemoryHistoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/InMemoryHistoryManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/InMemoryTaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/InMemoryTaskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/Managers.java" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/Managers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/manager/TaskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/model/Epic.java" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/model/Epic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/model/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/src/ru/praktikum/kanban/model/Task.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/FileBackedTaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/FileBackedTaskManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/InMemoryTaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/InMemoryTaskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/TaskConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/manager/TaskConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/model/Epic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/model/Epic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/model/Subtask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/model/Subtask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ru/praktikum/kanban/model/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/praktikum/kanban/model/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tasks.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tasks.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/ru/praktikum/kanban/manager/FileBackedTaskManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/ru/praktikum/kanban/manager/FileBackedTaskManagerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ru/praktikum/kanban/manager/TaskEqualityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/ru/praktikum/kanban/manager/TaskEqualityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ru/praktikum/kanban/manager/TaskManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/ru/praktikum/kanban/manager/TaskManagerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +58,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;sprint__6-in-file-manager&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;sprint__8-solution-time-and-duration&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Barguzin 7/dev/HW6&quot;
   }
 }</component>

@@ -21,8 +21,8 @@ public class TaskEqualityTest {
 
     @Test
     public void testSubtaskEqualityById() {
-        Subtask subtask1 = new Subtask(1, "Subtask 1", "Subtask Description 1", TaskStatus.NEW, duration, startTime, 0);
-        Subtask subtask2 = new Subtask(2, "Subtask 2", "Subtask Description 2", TaskStatus.NEW, duration, startTime, 0);
+        Subtask subtask1 = new Subtask(1, "Subtask 1", "Subtask Description 1", TaskStatus.NEW, 0);
+        Subtask subtask2 = new Subtask(2, "Subtask 2", "Subtask Description 2", TaskStatus.NEW, 0);
 
         assertEquals("Subtasks with the same id should be equal", subtask1, subtask1);
         assertNotEquals("Subtasks with different ids should not be equal", subtask1, subtask2);
@@ -46,8 +46,8 @@ public class TaskEqualityTest {
 
     @Test
     public void testSubtaskInequalityByStatus() {
-        Subtask subtask1 = new Subtask(1, "Subtask", "Description", TaskStatus.NEW, duration, startTime, 0);
-        Subtask subtask2 = new Subtask(2, "Subtask", "Description", TaskStatus.IN_PROGRESS, duration, startTime, 0);
+        Subtask subtask1 = new Subtask(1, "Subtask", "Description", TaskStatus.NEW, 0);
+        Subtask subtask2 = new Subtask(2, "Subtask", "Description", TaskStatus.IN_PROGRESS, 0);
 
         assertNotEquals("Subtasks with different status should not be equal", subtask1, subtask2);
     }
