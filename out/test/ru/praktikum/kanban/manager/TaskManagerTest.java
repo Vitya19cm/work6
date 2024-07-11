@@ -18,7 +18,7 @@ public class TaskManagerTest {
 
     @Test
     public void testSubtaskCannotBeItsOwnEpic() {
-        Subtask subtask = new Subtask(1, "Subtask 1", "Subtask Description 1", TaskStatus.NEW, duration, startTime, 1);
+        Subtask subtask = new Subtask(1, "Subtask 1", "Subtask Description 1", TaskStatus.NEW, 1);
 
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
         assertFalse("Subtask cannot be its own epic",
@@ -41,7 +41,7 @@ public class TaskManagerTest {
         Task task = new Task(1, "Task 1", "Description 1", TaskStatus.NEW);
         taskManager.createTask(task);
 
-        Subtask subtask = new Subtask(2, "Subtask 1", "Subtask Description 1", TaskStatus.NEW, duration, startTime, 0);
+        Subtask subtask = new Subtask(2, "Subtask 1", "Subtask Description 1", TaskStatus.NEW, 0);
         taskManager.createTask(subtask);
 
         Epic epic = new Epic(3, "Epic 1", "Epic Description 1", TaskStatus.NEW, subtasks);
